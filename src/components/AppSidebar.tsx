@@ -9,18 +9,30 @@ import {
   LogOut,
   Zap,
   ChevronRight,
+  HeartPulse,
 } from "lucide-react";
+import { useRole, AppRole } from "@/context/RoleContext";
 
-const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "APN Automation", href: "/apn-automation", icon: FileSpreadsheet },
-  { label: "PDF Extraction", href: "/pdf-extraction", icon: FileText },
-  { label: "Logs", href: "/logs", icon: ScrollText },
-  { label: "Settings", href: "/settings", icon: Settings },
+const ALL_NAV_ITEMS = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ["admin"] as AppRole[] },
+  { label: "APN Automation", href: "/apn-automation", icon: FileSpreadsheet, roles: ["admin", "user-apn"] as AppRole[] },
+  { label: "Public Health", href: "/public-health-automation", icon: HeartPulse, roles: ["admin", "user-ph"] as AppRole[] },
+  { label: "PDF Extraction", href: "/pdf-extraction", icon: FileText, roles: ["admin"] as AppRole[] },
+  { label: "Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
+  { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph"] as AppRole[] },
 ];
+
+const ROLE_SECTION_LABEL: Record<AppRole, string> = {
+  admin: "Main Menu",
+  "user-apn": "APN Automation",
+  "user-ph": "Public Health",
+};
 
 export function AppSidebar() {
   const location = useLocation();
+  const { role } = useRole();
+
+  const navItems = ALL_NAV_ITEMS.filter((item) => item.roles.includes(role));
 
   return (
     <aside className="flex h-screen w-60 flex-shrink-0 flex-col bg-sidebar border-r border-sidebar-border">
@@ -38,7 +50,7 @@ export function AppSidebar() {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4 px-3">
         <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-sidebar-muted">
-          Main Menu
+          {ROLE_SECTION_LABEL[role]}
         </p>
         <ul className="space-y-0.5">
           {navItems.map((item) => {
