@@ -1,14 +1,41 @@
 import { AppSidebar } from "@/components/AppSidebar";
-import { Bell, Search, ChevronDown } from "lucide-react";
+import { Bell, Search, ChevronDown, Check } from "lucide-react";
+import { useRole, AppRole, ROLE_LABELS, ROLE_INITIALS } from "@/context/RoleContext";
+import { useState, useRef, useEffect } from "react";
 
 type LayoutProps = {
   children: React.ReactNode;
   title: string;
   subtitle?: string;
-  role?: "admin" | "user";
 };
 
-export function Layout({ children, title, subtitle, role = "admin" }: LayoutProps) {
+const ROLE_OPTIONS: { value: AppRole; label: string; description: string }[] = [
+  { value: "admin", label: "Admin", description: "Full access to all features" },
+  { value: "user-apn", label: "APN User", description: "APN Automation only" },
+  { value: "user-ph", label: "PH User", description: "Public Health Automation only" },
+];
+
+const ROLE_BADGE_STYLE: Record<AppRole, string> = {
+  admin: "bg-primary text-primary-foreground",
+  "user-apn": "bg-status-info text-white",
+  "user-ph": "bg-status-success text-white",
+};
+
+export function Layout({ children, title, subtitle }: LayoutProps) {
+  const { role, setRole } = useRole();
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       <AppSidebar />
@@ -38,20 +65,49 @@ export function Layout({ children, title, subtitle, role = "admin" }: LayoutProp
               <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
             </button>
 
-            {/* Role + User */}
-            <div className="flex items-center gap-2.5 rounded-md border border-border bg-background px-3 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
-                {role === "admin" ? "A" : "U"}
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-xs font-medium text-foreground leading-tight">
-                  {role === "admin" ? "Admin User" : "Standard User"}
-                </p>
-                <p className="text-[10px] text-muted-foreground leading-tight capitalize">
-                  {role} access
-                </p>
-              </div>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+            {/* Role Switcher Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setOpen((v) => !v)}
+                className="flex items-center gap-2.5 rounded-md border border-border bg-background px-3 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <div className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${ROLE_BADGE_STYLE[role]}`}>
+                  {ROLE_INITIALS[role]}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <p className="text-xs font-medium text-foreground leading-tight">
+                    {ROLE_LABELS[role]}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-tight">
+                    {role === "admin" ? "Full access" : role === "user-apn" ? "APN only" : "PH only"}
+                  </p>
+                </div>
+                <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+              </button>
+
+              {open && (
+                <div className="absolute right-0 top-full mt-1.5 w-56 rounded-lg border border-border bg-card shadow-lg z-50 overflow-hidden">
+                  <div className="px-3 py-2 border-b border-border">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Switch Role (Demo)</p>
+                  </div>
+                  {ROLE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => { setRole(opt.value); setOpen(false); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-muted/50 transition-colors text-left group"
+                    >
+                      <div className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${ROLE_BADGE_STYLE[opt.value]}`}>
+                        {ROLE_INITIALS[opt.value]}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                        <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                      </div>
+                      {role === opt.value && <Check className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </header>
