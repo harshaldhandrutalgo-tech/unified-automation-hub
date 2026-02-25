@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { EmptyState } from "@/components/EmptyState";
-import { Button } from "@/components/ui/button";
-import { Upload, Play, FileSpreadsheet, ExternalLink, Search, Filter } from "lucide-react";
+import { Upload, FileSpreadsheet, ExternalLink, Search, Filter } from "lucide-react";
 
 const apnData = [
   { dateStart: "14-03-2012", property: "1948 S RIMPAU BLVD, LOS ANGELES CA 90016", apn: "5061017010", caseType: "Property Management Training Program", caseNum: "377847", dateClose: "", caseItem: "Site Visit/Initial Inspection", link: "377847" },
@@ -31,12 +30,12 @@ export default function APNAutomation() {
   });
 
   return (
-    <Layout title="APN Automation" subtitle="Upload CSV/Excel files to run APN report automation">
+    <Layout title="APN Automation" subtitle="Upload CSV/Excel files and view APN case records">
       <div className="space-y-6 animate-fade-in">
         {/* Upload Panel */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
-          <h2 className="text-sm font-semibold text-foreground mb-4">New Automation Run</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Upload New Data</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-foreground">
                 Upload File <span className="text-muted-foreground font-normal">(CSV or Excel)</span>
@@ -59,33 +58,21 @@ export default function APNAutomation() {
                 />
               </label>
             </div>
-
-            <div className="flex flex-col justify-between">
-              <div className="space-y-3">
-                <div>
-                  <label className="mb-1.5 block text-xs font-medium text-foreground">Automation Type</label>
-                  <select className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                    <option value="">Select type…</option>
-                    <option value="apn-standard">APN Standard Report</option>
-                    <option value="apn-detailed">APN Detailed Report</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-medium text-foreground">Email Notification</label>
-                  <input
-                    type="email"
-                    placeholder="Notify email (optional)"
-                    className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
-                </div>
-              </div>
-              <Button
-                className="mt-4 w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90 h-9"
-                disabled={!file}
-              >
-                <Play className="h-3.5 w-3.5" />
-                Run Automation
-              </Button>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">Automation Type</label>
+              <select className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                <option value="">Select type…</option>
+                <option value="apn-standard">APN Standard Report</option>
+                <option value="apn-detailed">APN Detailed Report</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">Email Notification</label>
+              <input
+                type="email"
+                placeholder="Notify email (optional)"
+                className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
             </div>
           </div>
         </div>
@@ -96,7 +83,7 @@ export default function APNAutomation() {
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="h-4 w-4 text-muted-foreground" />
               <h2 className="text-sm font-semibold text-foreground">APN Case Records</h2>
-              <span className="text-xs text-muted-foreground">({filtered.length} records)</span>
+              <span className="rounded-full bg-primary-subtle px-2 py-0.5 text-[11px] font-semibold text-primary">{filtered.length}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="relative">

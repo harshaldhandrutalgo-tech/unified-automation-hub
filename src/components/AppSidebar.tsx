@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   FileSpreadsheet,
-  FileText,
   ScrollText,
   Settings,
   LogOut,
@@ -17,7 +16,7 @@ const ALL_NAV_ITEMS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ["admin"] as AppRole[] },
   { label: "APN Automation", href: "/apn-automation", icon: FileSpreadsheet, roles: ["admin", "user-apn"] as AppRole[] },
   { label: "Public Health", href: "/public-health-automation", icon: HeartPulse, roles: ["admin", "user-ph"] as AppRole[] },
-  { label: "PDF Extraction", href: "/pdf-extraction", icon: FileText, roles: ["admin"] as AppRole[] },
+  
   { label: "Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
   { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph"] as AppRole[] },
 ];

@@ -7,7 +7,7 @@ import { RoleProvider } from "@/context/RoleContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import APNAutomation from "./pages/APNAutomation";
-import PDFExtraction from "./pages/PDFExtraction";
+
 import PublicHealthAutomation from "./pages/PublicHealthAutomation";
 import Logs from "./pages/Logs";
 import Settings from "./pages/Settings";
@@ -28,7 +28,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/apn-automation" element={<APNAutomation />} />
             <Route path="/public-health-automation" element={<PublicHealthAutomation />} />
-            <Route path="/pdf-extraction" element={<PDFExtraction />} />
+            
             <Route path="/logs" element={<Logs />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
