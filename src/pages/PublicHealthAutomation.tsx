@@ -1,24 +1,42 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { EmptyState } from "@/components/EmptyState";
-import { RunStatusBadge, EmailStatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Upload, Play, HeartPulse, Download } from "lucide-react";
+import { Upload, Play, HeartPulse, ExternalLink, Search, Filter } from "lucide-react";
+
+const phData: {
+  srNo: number;
+  address: string;
+  startDate: string;
+  violationDate: string;
+  pdfName: string;
+  link: string;
+}[] = [];
 
 export default function PublicHealthAutomation() {
   const [file, setFile] = useState<File | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filtered = phData.filter((row) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      row.address.toLowerCase().includes(q) ||
+      row.pdfName.toLowerCase().includes(q) ||
+      row.link.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <Layout
       title="Public Health Automation"
-      subtitle="Upload data files to run public health report automation"
+      subtitle="Upload data files to run public health safety report automation"
     >
       <div className="space-y-6 animate-fade-in">
         {/* Upload Panel */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
           <h2 className="text-sm font-semibold text-foreground mb-4">New Automation Run</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {/* File Upload */}
             <div>
               <label className="mb-1.5 block text-xs font-medium text-foreground">
                 Upload File <span className="text-muted-foreground font-normal">(CSV or Excel)</span>
@@ -42,7 +60,6 @@ export default function PublicHealthAutomation() {
               </label>
             </div>
 
-            {/* Run options */}
             <div className="flex flex-col justify-between">
               <div className="space-y-3">
                 <div>
@@ -82,12 +99,25 @@ export default function PublicHealthAutomation() {
           </div>
         </div>
 
-        {/* Previous Runs Table */}
+        {/* Public Health Data Table */}
         <div className="rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
               <HeartPulse className="h-4 w-4 text-muted-foreground" />
-              <h2 className="text-sm font-semibold text-foreground">Previous Runs</h2>
+              <h2 className="text-sm font-semibold text-foreground">Public Health Safety Records</h2>
+              <span className="text-xs text-muted-foreground">({filtered.length} records)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search address, PDF name…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-8 w-52 rounded-md border border-border bg-background pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
             </div>
           </div>
 
@@ -95,25 +125,45 @@ export default function PublicHealthAutomation() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/30">
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Run ID</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Uploaded File</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Report Type</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Status</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Generated Report</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Email Status</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground">Timestamp</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Sr. No.</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground">Address</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Start Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Violation Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">PDF Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground whitespace-nowrap">Link</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colSpan={7}>
-                    <EmptyState
-                      title="No runs yet"
-                      description="Upload a file and run automation to see results here."
-                      icon={<HeartPulse className="h-6 w-6" />}
-                    />
-                  </td>
-                </tr>
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={6}>
+                      <EmptyState
+                        title="No records yet"
+                        description="Upload a file and run automation to see public health safety records here."
+                        icon={<HeartPulse className="h-6 w-6" />}
+                      />
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((row) => (
+                    <tr
+                      key={row.srNo}
+                      className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-xs text-foreground font-mono">{row.srNo}</td>
+                      <td className="px-4 py-3 text-xs text-foreground min-w-[240px]">{row.address}</td>
+                      <td className="px-4 py-3 text-xs text-foreground whitespace-nowrap">{row.startDate}</td>
+                      <td className="px-4 py-3 text-xs text-foreground whitespace-nowrap">{row.violationDate}</td>
+                      <td className="px-4 py-3 text-xs text-foreground whitespace-nowrap">{row.pdfName}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <button className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+                          {row.link}
+                          <ExternalLink className="h-3 w-3" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
