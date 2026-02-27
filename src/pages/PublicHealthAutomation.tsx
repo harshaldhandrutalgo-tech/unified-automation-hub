@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { EmptyState } from "@/components/EmptyState";
-import { Button } from "@/components/ui/button";
 import { Upload, HeartPulse, ExternalLink, Search } from "lucide-react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend, LineChart, Line,
+} from "recharts";
 
 const phData = [
   { srNo: 1, address: "1423 W MARTIN LUTHER KING JR BLVD, LOS ANGELES CA 90062", startDate: "15-04-2023", violationDate: "22-04-2023", pdfName: "violation_report_1423.pdf", link: "VR-40231" },
@@ -12,6 +15,47 @@ const phData = [
   { srNo: 5, address: "8901 S BROADWAY, LOS ANGELES CA 90003", startDate: "20-11-2023", violationDate: "28-11-2023", pdfName: "abatement_order_8901.pdf", link: "AO-73219" },
   { srNo: 6, address: "2150 W JEFFERSON BLVD, LOS ANGELES CA 90018", startDate: "14-03-2024", violationDate: "21-03-2024", pdfName: "pest_control_2150.pdf", link: "PC-84502" },
   { srNo: 7, address: "4455 S VERMONT AVE, LOS ANGELES CA 90037", startDate: "02-06-2023", violationDate: "09-06-2023", pdfName: "water_quality_4455.pdf", link: "WQ-19384" },
+];
+
+// Chart data
+const violationsByYear = (() => {
+  const counts: Record<string, number> = {};
+  phData.forEach((d) => {
+    const year = d.violationDate.split("-")[2];
+    counts[year] = (counts[year] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0])).map(([year, violations]) => ({ year, violations }));
+})();
+
+const violationTypeData = (() => {
+  const types: Record<string, number> = {};
+  phData.forEach((d) => {
+    const prefix = d.pdfName.replace(/_\d+\.pdf$/, "").replace(/_/g, " ");
+    const label = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    types[label] = (types[label] || 0) + 1;
+  });
+  return Object.entries(types).map(([name, value]) => ({ name: name.length > 16 ? name.slice(0, 16) + "…" : name, fullName: name, value }));
+})();
+
+const responseTimeData = phData.map((d) => {
+  const start = new Date(d.startDate.split("-").reverse().join("-"));
+  const violation = new Date(d.violationDate.split("-").reverse().join("-"));
+  const days = Math.round((violation.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return { address: d.address.split(",")[0].slice(-12), days, srNo: d.srNo };
+});
+
+const areaDistribution = (() => {
+  const areas: Record<string, number> = {};
+  phData.forEach((d) => {
+    const zip = d.address.match(/\d{5}$/)?.[0] || "Unknown";
+    areas[zip] = (areas[zip] || 0) + 1;
+  });
+  return Object.entries(areas).map(([zip, count]) => ({ zip, count }));
+})();
+
+const PH_COLORS = [
+  "hsl(142, 71%, 45%)", "hsl(38, 92%, 50%)", "hsl(0, 84%, 60%)",
+  "hsl(199, 89%, 48%)", "hsl(221, 83%, 53%)", "hsl(270, 60%, 55%)", "hsl(330, 70%, 50%)",
 ];
 
 export default function PublicHealthAutomation() {
@@ -28,12 +72,80 @@ export default function PublicHealthAutomation() {
     );
   });
 
+  const avgResponseDays = Math.round(responseTimeData.reduce((s, d) => s + d.days, 0) / responseTimeData.length);
+
   return (
     <Layout
       title="Public Health Automation"
       subtitle="Manage and track public health safety violation records"
     >
       <div className="space-y-6 animate-fade-in">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Total Violations</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">{phData.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Violation Types</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">{violationTypeData.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Avg Response Time</p>
+            <p className="mt-1 text-2xl font-bold text-primary">{avgResponseDays} days</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Areas Affected</p>
+            <p className="mt-1 text-2xl font-bold text-status-warning">{areaDistribution.length}</p>
+          </div>
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {/* Violation Type Distribution */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Violation Type Distribution</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={violationTypeData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                  {violationTypeData.map((_, i) => (
+                    <Cell key={i} fill={PH_COLORS[i % PH_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number, _: string, entry: any) => [value, entry.payload.fullName]} contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Legend iconType="circle" iconSize={8} formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Violations Timeline */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Violations by Year</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={violationsByYear}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 88%)" />
+                <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Bar dataKey="violations" fill="hsl(142, 71%, 45%)" radius={[4, 4, 0, 0]} barSize={32} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Response Time */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Response Time (Days)</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={responseTimeData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 88%)" />
+                <XAxis dataKey="srNo" tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} label={{ value: "Record #", position: "insideBottom", offset: -5, fontSize: 10, fill: "hsl(215, 16%, 52%)" }} />
+                <YAxis tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Line type="monotone" dataKey="days" stroke="hsl(38, 92%, 50%)" strokeWidth={2} dot={{ fill: "hsl(38, 92%, 50%)", r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
         {/* Upload Panel */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
           <h2 className="text-sm font-semibold text-foreground mb-4">Upload New Data</h2>
