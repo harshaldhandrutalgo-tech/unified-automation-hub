@@ -67,7 +67,7 @@ export default function APNAutomation() {
 
   return (
     <Layout title="APN Automation" subtitle="Upload CSV/Excel files and view APN case records">
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in pb-2">
         {/* Analytics Cards */}
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           <div className="rounded-xl border border-border bg-card p-4 shadow-card">
@@ -89,9 +89,9 @@ export default function APNAutomation() {
         </div>
 
         {/* Charts Row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 min-h-0">
           {/* Case Type Distribution */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Case Type Distribution</h3>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -107,7 +107,7 @@ export default function APNAutomation() {
           </div>
 
           {/* Cases Over Time */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Cases Over Time</h3>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={timelineData}>
@@ -127,7 +127,7 @@ export default function APNAutomation() {
           </div>
 
           {/* Case Item Breakdown */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Case Item Breakdown</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={caseItemChartData} layout="vertical">

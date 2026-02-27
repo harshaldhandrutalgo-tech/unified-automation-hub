@@ -73,11 +73,14 @@
     @apply border-border;
   }
 
-  body {
+  html, body, #root {
     @apply bg-background text-foreground;
     font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
     -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {

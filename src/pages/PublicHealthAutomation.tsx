@@ -79,7 +79,7 @@ export default function PublicHealthAutomation() {
       title="Public Health Automation"
       subtitle="Manage and track public health safety violation records"
     >
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in pb-2">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           <div className="rounded-xl border border-border bg-card p-4 shadow-card">
@@ -101,9 +101,9 @@ export default function PublicHealthAutomation() {
         </div>
 
         {/* Charts Row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 min-h-0">
           {/* Violation Type Distribution */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Violation Type Distribution</h3>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -119,7 +119,7 @@ export default function PublicHealthAutomation() {
           </div>
 
           {/* Violations Timeline */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Violations by Year</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={violationsByYear}>
@@ -133,7 +133,7 @@ export default function PublicHealthAutomation() {
           </div>
 
           {/* Response Time */}
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Response Time (Days)</h3>
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={responseTimeData}>
