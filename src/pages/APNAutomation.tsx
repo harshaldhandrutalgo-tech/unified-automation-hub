@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { EmptyState } from "@/components/EmptyState";
 import { Upload, FileSpreadsheet, ExternalLink, Search, Filter } from "lucide-react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend, AreaChart, Area,
+} from "recharts";
 
 const apnData = [
   { dateStart: "14-03-2012", property: "1948 S RIMPAU BLVD, LOS ANGELES CA 90016", apn: "5061017010", caseType: "Property Management Training Program", caseNum: "377847", dateClose: "", caseItem: "Site Visit/Initial Inspection", link: "377847" },
@@ -10,6 +14,38 @@ const apnData = [
   { dateStart: "21-01-2026", property: "10910 S AVALON BLVD, LOS ANGELES CA 90061", apn: "6071003029", caseType: "Complaint", caseNum: "972598", dateClose: "", caseItem: "Complaint Received", link: "972598" },
   { dateStart: "27-02-2007", property: "195 W 41ST PL, LOS ANGELES CA 90037", apn: "5111021025", caseType: "Hearing", caseNum: "115293", dateClose: "", caseItem: "Site Visit/Initial Inspection", link: "115293" },
   { dateStart: "08-08-2006", property: "928 W 83RD ST, LOS ANGELES CA 90044", apn: "6032009007", caseType: "Substandard", caseNum: "89023", dateClose: "", caseItem: "Site Visit/Initial Inspection", link: "89023" },
+];
+
+// Chart data derived from apnData
+const caseTypeChartData = (() => {
+  const counts: Record<string, number> = {};
+  apnData.forEach((d) => { counts[d.caseType] = (counts[d.caseType] || 0) + 1; });
+  return Object.entries(counts).map(([name, value]) => ({ name: name.length > 18 ? name.slice(0, 18) + "…" : name, fullName: name, value }));
+})();
+
+const caseItemChartData = (() => {
+  const counts: Record<string, number> = {};
+  apnData.forEach((d) => { counts[d.caseItem] = (counts[d.caseItem] || 0) + 1; });
+  return Object.entries(counts).map(([name, value]) => ({ name, value }));
+})();
+
+const timelineData = (() => {
+  const yearCounts: Record<string, number> = {};
+  apnData.forEach((d) => {
+    const year = d.dateStart.split("-")[2];
+    yearCounts[year] = (yearCounts[year] || 0) + 1;
+  });
+  return Object.entries(yearCounts).sort((a, b) => a[0].localeCompare(b[0])).map(([year, cases]) => ({ year, cases }));
+})();
+
+const PIE_COLORS = [
+  "hsl(221, 83%, 53%)", "hsl(142, 71%, 45%)", "hsl(38, 92%, 50%)",
+  "hsl(0, 84%, 60%)", "hsl(199, 89%, 48%)", "hsl(270, 60%, 55%)",
+];
+
+const statusData = [
+  { name: "Open", value: apnData.filter((d) => !d.dateClose).length },
+  { name: "Closed", value: apnData.filter((d) => d.dateClose).length },
 ];
 
 export default function APNAutomation() {
@@ -32,6 +68,79 @@ export default function APNAutomation() {
   return (
     <Layout title="APN Automation" subtitle="Upload CSV/Excel files and view APN case records">
       <div className="space-y-6 animate-fade-in">
+        {/* Analytics Cards */}
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Total Cases</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">{apnData.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Case Types</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">{caseTypeChartData.length}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Open Cases</p>
+            <p className="mt-1 text-2xl font-bold text-status-warning">{statusData[0].value}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-card">
+            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Closed Cases</p>
+            <p className="mt-1 text-2xl font-bold text-status-success">{statusData[1].value}</p>
+          </div>
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {/* Case Type Distribution */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Case Type Distribution</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={caseTypeChartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                  {caseTypeChartData.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number, _: string, entry: any) => [value, entry.payload.fullName]} contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Legend iconType="circle" iconSize={8} formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Cases Over Time */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Cases Over Time</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <AreaChart data={timelineData}>
+                <defs>
+                  <linearGradient id="apnGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 88%)" />
+                <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Area type="monotone" dataKey="cases" stroke="hsl(221, 83%, 53%)" fill="url(#apnGrad)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Case Item Breakdown */}
+          <div className="rounded-xl border border-border bg-card shadow-card p-5">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Case Item Breakdown</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={caseItemChartData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 88%)" />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(215, 16%, 52%)" }} />
+                <YAxis dataKey="name" type="category" width={140} tick={{ fontSize: 10, fill: "hsl(215, 16%, 52%)" }} />
+                <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(214, 20%, 88%)" }} />
+                <Bar dataKey="value" fill="hsl(199, 89%, 48%)" radius={[0, 4, 4, 0]} barSize={18} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         {/* Upload Panel */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
           <h2 className="text-sm font-semibold text-foreground mb-4">Upload New Data</h2>
