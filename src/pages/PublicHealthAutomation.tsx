@@ -79,7 +79,35 @@ export default function PublicHealthAutomation() {
       title="Public Health Automation"
       subtitle="Manage and track public health safety violation records"
     >
-      <div className="space-y-6 animate-fade-in pb-2">
+      <div className="space-y-6 animate-fade-in pb-4">
+        {/* Address List Section - for PH users */}
+        <div className="rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+            <div className="flex items-center gap-2">
+              <HeartPulse className="h-4 w-4 text-muted-foreground" />
+              <h2 className="text-sm font-semibold text-foreground">Tracked Addresses</h2>
+              <span className="rounded-full bg-primary-subtle px-2 py-0.5 text-[11px] font-semibold text-primary">{phData.length}</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
+            {phData.map((row) => (
+              <div key={row.srNo} className="flex items-start gap-3 rounded-lg border border-border bg-background p-3 hover:shadow-card transition-shadow">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-subtle text-primary text-xs font-bold">
+                  {row.srNo}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium text-foreground truncate">{row.address.split(",")[0]}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{row.address.split(",").slice(1).join(",").trim()}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-[10px] text-muted-foreground">Start: {row.startDate}</span>
+                    <span className="text-[10px] text-status-danger">Violation: {row.violationDate}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           <div className="rounded-xl border border-border bg-card p-4 shadow-card">
@@ -105,9 +133,9 @@ export default function PublicHealthAutomation() {
           {/* Violation Type Distribution */}
           <div className="rounded-xl border border-border bg-card shadow-card p-5 overflow-hidden">
             <h3 className="text-sm font-semibold text-foreground mb-4">Violation Type Distribution</h3>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={violationTypeData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                <Pie data={violationTypeData} cx="50%" cy="38%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
                   {violationTypeData.map((_, i) => (
                     <Cell key={i} fill={PH_COLORS[i % PH_COLORS.length]} />
                   ))}
