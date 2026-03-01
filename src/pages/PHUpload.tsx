@@ -1,21 +1,38 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { Upload } from "lucide-react";
+import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
+
+const mockAddresses = [
+  { id: 1, address: "1234 Oak Street, Sacramento, CA 95814", region: "Central Region", dateAdded: "2025-01-12", status: "Monitored" },
+  { id: 2, address: "5678 Pine Avenue, Sacramento, CA 95816", region: "District 4", dateAdded: "2025-01-18", status: "Monitored" },
+  { id: 3, address: "9012 Elm Boulevard, Sacramento, CA 95818", region: "Central Region", dateAdded: "2025-02-03", status: "Pending" },
+  { id: 4, address: "3456 Maple Drive, Sacramento, CA 95820", region: "District 2", dateAdded: "2025-02-11", status: "Monitored" },
+  { id: 5, address: "7890 Cedar Lane, Sacramento, CA 95822", region: "District 7", dateAdded: "2025-02-20", status: "Resolved" },
+];
 
 export default function PHUpload() {
   const [file, setFile] = useState<File | null>(null);
+  const [manualAddress, setManualAddress] = useState("");
+  const [search, setSearch] = useState("");
+
+  const filtered = mockAddresses.filter(
+    (a) =>
+      a.address.toLowerCase().includes(search.toLowerCase()) ||
+      a.region.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <Layout title="Upload Address Data" subtitle="Upload CSV/Excel files for public health address processing">
+    <Layout title="Upload Address Data" subtitle="Upload file or add addresses for public health processing">
       <div className="space-y-6 animate-fade-in pb-4">
+        {/* Upload / Add Section */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-card">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Upload New Data</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Add New Address</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-foreground">
                 Upload File <span className="text-muted-foreground font-normal">(CSV or Excel)</span>
               </label>
-              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-background py-8 px-4 text-center transition-colors hover:border-primary/50 hover:bg-primary-subtle/30">
+              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-background py-6 px-4 text-center transition-colors hover:border-primary/50 hover:bg-primary-subtle/30">
                 <Upload className="h-6 w-6 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium text-foreground">
@@ -34,28 +51,88 @@ export default function PHUpload() {
               </label>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-foreground">Report Type</label>
-              <select className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                <option value="">Select type…</option>
-                <option value="ph-weekly">Weekly Health Summary</option>
-                <option value="ph-monthly">Monthly Epidemiology Report</option>
-                <option value="ph-surveillance">Disease Surveillance Report</option>
-              </select>
-              <label className="mt-3 mb-1.5 block text-xs font-medium text-foreground">Region / District</label>
-              <input
-                type="text"
-                placeholder="e.g. Central Region, District 4"
-                className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+              <label className="mb-1.5 block text-xs font-medium text-foreground">
+                Or Add Address Manually
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={manualAddress}
+                  onChange={(e) => setManualAddress(e.target.value)}
+                  placeholder="e.g. 1234 Oak Street, Sacramento, CA"
+                  className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <button
+                  className="h-9 shrink-0 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                  onClick={() => setManualAddress("")}
+                >
+                  Add
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1.5">Enter a full address to add it to the monitoring list</p>
             </div>
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-foreground">Email Notification</label>
-              <input
-                type="email"
-                placeholder="Notify email (optional)"
-                className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
+          </div>
+        </div>
+
+        {/* Address List */}
+        <div className="rounded-xl border border-border bg-card p-6 shadow-card">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold text-foreground">Address List</h2>
+            <span className="text-xs text-muted-foreground">{filtered.length} records</span>
+          </div>
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by address or region…"
+              className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Address</th>
+                  <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Region</th>
+                  <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Date Added</th>
+                  <th className="pb-2 text-xs font-medium text-muted-foreground">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((row) => (
+                  <tr key={row.id} className="border-b border-border/50 last:border-0">
+                    <td className="py-2.5 pr-4 text-xs text-foreground flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
+                      {row.address}
+                    </td>
+                    <td className="py-2.5 pr-4 text-xs text-muted-foreground">{row.region}</td>
+                    <td className="py-2.5 pr-4 text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3 shrink-0" />
+                      {row.dateAdded}
+                    </td>
+                    <td className="py-2.5">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                        row.status === "Monitored" ? "bg-emerald-500/10 text-emerald-600" :
+                        row.status === "Pending" ? "bg-amber-500/10 text-amber-600" :
+                        "bg-blue-500/10 text-blue-600"
+                      }`}>
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-xs text-muted-foreground">
+                      <FileText className="h-5 w-5 mx-auto mb-1.5 opacity-40" />
+                      No addresses found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
