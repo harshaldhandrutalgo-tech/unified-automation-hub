@@ -18,12 +18,18 @@ export default function Login() {
     <div className="min-h-screen bg-background flex">
       {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-sidebar p-12">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-            <Zap className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-sidebar-accent-foreground font-semibold text-lg tracking-tight">UniAutomate</span>
-        </div>
+<div className="flex items-center gap-3">
+  <div className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden">
+    <img
+      src="/logo.png"
+      alt="UniAutomate Logo"
+      className="h-9 w-9 object-contain"
+    />
+  </div>
+  <span className="text-sidebar-accent-foreground font-semibold text-lg tracking-tight">
+    UniAutomate
+  </span>
+</div>
 
         <div className="space-y-6">
           <div>
@@ -59,12 +65,16 @@ export default function Login() {
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm animate-fade-in">
           {/* Mobile logo */}
-          <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Zap className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-foreground">UniAutomate</span>
-          </div>
+<div className="mb-8 flex items-center gap-2 lg:hidden">
+  <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+    <img
+      src="/logo.png"
+      alt="UniAutomate Logo"
+      className="h-8 w-8 object-contain"
+    />
+  </div>
+  <span className="font-semibold text-foreground">UniAutomate</span>
+</div>
 
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">Welcome back</h1>

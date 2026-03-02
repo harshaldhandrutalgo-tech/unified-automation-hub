@@ -38,15 +38,23 @@ export function AppSidebar() {
   return (
     <aside className="flex h-screen w-60 flex-shrink-0 flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 px-5 border-b border-sidebar-border">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <Zap className="h-4 w-4 text-primary-foreground" />
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-sidebar-accent-foreground leading-tight">UniAutomate</p>
-          <p className="text-[10px] text-sidebar-muted leading-tight">Automation Platform</p>
-        </div>
-      </div>
+<div className="flex h-16 items-center gap-2.5 px-5 border-b border-sidebar-border">
+  <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+    <img
+      src="/logo.png"
+      alt="UniAutomate Logo"
+      className="h-8 w-8 object-contain"
+    />
+  </div>
+  <div>
+    <p className="text-sm font-semibold text-sidebar-accent-foreground leading-tight">
+      UniAutomate
+    </p>
+    <p className="text-[10px] text-sidebar-muted leading-tight">
+      Automation Platform
+    </p>
+  </div>
+</div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4 px-3">
