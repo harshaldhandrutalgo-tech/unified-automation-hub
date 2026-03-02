@@ -3,11 +3,11 @@ import { Layout } from "@/components/Layout";
 import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
 
 const mockAPNs = [
-  { id: 1, apn: "123-456-789", address: "1234 Oak Street, Sacramento, CA 95814", dateAdded: "2025-01-15", status: "Active" },
-  { id: 2, apn: "234-567-890", address: "5678 Pine Avenue, Sacramento, CA 95816", dateAdded: "2025-01-20", status: "Active" },
-  { id: 3, apn: "345-678-901", address: "9012 Elm Boulevard, Sacramento, CA 95818", dateAdded: "2025-02-01", status: "Pending" },
-  { id: 4, apn: "456-789-012", address: "3456 Maple Drive, Sacramento, CA 95820", dateAdded: "2025-02-10", status: "Active" },
-  { id: 5, apn: "567-890-123", address: "7890 Cedar Lane, Sacramento, CA 95822", dateAdded: "2025-02-18", status: "Completed" },
+  { id: 1, apn: "123-456-789", address: "1234 Oak Street, Sacramento, CA 95814", dateAdded: new Date("2025-01-15") },
+  { id: 2, apn: "234-567-890", address: "5678 Pine Avenue, Sacramento, CA 95816", dateAdded: new Date("2025-01-20") },
+  { id: 3, apn: "345-678-901", address: "9012 Elm Boulevard, Sacramento, CA 95818", dateAdded: new Date("2025-02-01") },
+  { id: 4, apn: "456-789-012", address: "3456 Maple Drive, Sacramento, CA 95820", dateAdded: new Date("2025-02-10") },
+  { id: 5, apn: "567-890-123", address: "7890 Cedar Lane, Sacramento, CA 95822", dateAdded: new Date("2025-02-18") },
 ];
 
 export default function APNUpload() {
@@ -96,8 +96,7 @@ export default function APNUpload() {
                 <tr className="border-b border-border text-left">
                   <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">APN</th>
                   <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Address</th>
-                  <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Date Added</th>
-                  <th className="pb-2 text-xs font-medium text-muted-foreground">Status</th>
+                  <th className="pb-2 text-xs font-medium text-muted-foreground">Date Added</th>
                 </tr>
               </thead>
               <tbody>
@@ -108,24 +107,17 @@ export default function APNUpload() {
                       <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
                       {row.address}
                     </td>
-                    <td className="py-2.5 pr-4 text-xs text-muted-foreground flex items-center gap-1.5">
-                      <Calendar className="h-3 w-3 shrink-0" />
-                      {row.dateAdded}
-                    </td>
-                    <td className="py-2.5">
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                        row.status === "Active" ? "bg-emerald-500/10 text-emerald-600" :
-                        row.status === "Pending" ? "bg-amber-500/10 text-amber-600" :
-                        "bg-blue-500/10 text-blue-600"
-                      }`}>
-                        {row.status}
+                    <td className="py-2.5 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="h-3 w-3 shrink-0" />
+                        {row.dateAdded.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                       </span>
                     </td>
                   </tr>
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-xs text-muted-foreground">
+                    <td colSpan={3} className="py-8 text-center text-xs text-muted-foreground">
                       <FileText className="h-5 w-5 mx-auto mb-1.5 opacity-40" />
                       No APNs found
                     </td>
