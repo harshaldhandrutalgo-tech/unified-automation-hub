@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import * as XLSX from "xlsx";
 
-const mockAddresses = [
+type AddressEntry = {
+  id: number;
+  address: string;
+  dateAdded: Date;
+};
+
+const initialAddresses: AddressEntry[] = [
   { id: 1, address: "1234 Oak Street, Sacramento, CA 95814", dateAdded: new Date("2025-01-12") },
   { id: 2, address: "5678 Pine Avenue, Sacramento, CA 95816", dateAdded: new Date("2025-01-18") },
   { id: 3, address: "9012 Elm Boulevard, Sacramento, CA 95818", dateAdded: new Date("2025-02-03") },
@@ -14,8 +22,76 @@ export default function PHUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [manualAddress, setManualAddress] = useState("");
   const [search, setSearch] = useState("");
+  const [addressList, setAddressList] = useState<AddressEntry[]>(initialAddresses);
+  const { toast } = useToast();
 
-  const filtered = mockAddresses.filter(
+  const nextId = () => Math.max(0, ...addressList.map((a) => a.id)) + 1;
+
+  const handleFileUpload = async (selectedFile: File) => {
+    setFile(selectedFile);
+    try {
+      const data = await selectedFile.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: Record<string, unknown>[] = XLSX.utils.sheet_to_json(sheet);
+
+      const addressKey = rows.length > 0
+        ? Object.keys(rows[0]).find((k) => k.toLowerCase().trim() === "address")
+        : null;
+
+      if (!addressKey || rows.length === 0) {
+        toast({
+          title: "Invalid file",
+          description: "No \"Address\" column found in the uploaded file. Please ensure the first row has \"Address\" as a column header.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const newEntries: AddressEntry[] = [];
+      let startId = nextId();
+      for (const row of rows) {
+        const val = String(row[addressKey] ?? "").trim();
+        if (val) {
+          newEntries.push({ id: startId++, address: val, dateAdded: new Date() });
+        }
+      }
+
+      if (newEntries.length === 0) {
+        toast({
+          title: "No records found",
+          description: "The Address column was found but contained no values.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setAddressList((prev) => [...prev, ...newEntries]);
+      toast({
+        title: "Addresses added successfully",
+        description: `${newEntries.length} new address${newEntries.length > 1 ? "es" : ""} added to the list.`,
+      });
+    } catch {
+      toast({
+        title: "Error reading file",
+        description: "Could not parse the uploaded file. Please check the format.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManualAdd = () => {
+    const val = manualAddress.trim();
+    if (!val) return;
+    setAddressList((prev) => [...prev, { id: nextId(), address: val, dateAdded: new Date() }]);
+    setManualAddress("");
+    toast({
+      title: "Address added",
+      description: `"${val}" has been added to the list.`,
+    });
+  };
+
+  const filtered = addressList.filter(
     (a) => a.address.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -44,9 +120,16 @@ export default function PHUpload() {
                   type="file"
                   accept=".csv,.xls,.xlsx"
                   className="sr-only"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileUpload(f);
+                    e.target.value = "";
+                  }}
                 />
               </label>
+              <p className="text-[10px] text-muted-foreground mt-1.5">
+                File must have an <strong>"Address"</strong> column header in the first row
+              </p>
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-foreground">
@@ -57,12 +140,13 @@ export default function PHUpload() {
                   type="text"
                   value={manualAddress}
                   onChange={(e) => setManualAddress(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleManualAdd()}
                   placeholder="e.g. 1234 Oak Street, Sacramento, CA"
                   className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 <button
                   className="h-9 shrink-0 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                  onClick={() => setManualAddress("")}
+                  onClick={handleManualAdd}
                 >
                   Add
                 </button>
@@ -91,7 +175,7 @@ export default function PHUpload() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                 <tr className="border-b border-border text-left">
+                <tr className="border-b border-border text-left">
                   <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Address</th>
                   <th className="pb-2 text-xs font-medium text-muted-foreground">Date Added</th>
                 </tr>
