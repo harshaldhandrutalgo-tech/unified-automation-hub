@@ -103,7 +103,6 @@ export default function PHUpload() {
                       <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
                       {row.address}
                     </td>
-                    <td className="py-2.5 pr-4 text-xs text-muted-foreground">{row.region}</td>
                     <td className="py-2.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="h-3 w-3 shrink-0" />
