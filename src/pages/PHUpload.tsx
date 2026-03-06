@@ -3,11 +3,11 @@ import { Layout } from "@/components/Layout";
 import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
 
 const mockAddresses = [
-  { id: 1, address: "1234 Oak Street, Sacramento, CA 95814", region: "Central Region", dateAdded: new Date("2025-01-12") },
-  { id: 2, address: "5678 Pine Avenue, Sacramento, CA 95816", region: "District 4", dateAdded: new Date("2025-01-18") },
-  { id: 3, address: "9012 Elm Boulevard, Sacramento, CA 95818", region: "Central Region", dateAdded: new Date("2025-02-03") },
-  { id: 4, address: "3456 Maple Drive, Sacramento, CA 95820", region: "District 2", dateAdded: new Date("2025-02-11") },
-  { id: 5, address: "7890 Cedar Lane, Sacramento, CA 95822", region: "District 7", dateAdded: new Date("2025-02-20") },
+  { id: 1, address: "1234 Oak Street, Sacramento, CA 95814", dateAdded: new Date("2025-01-12") },
+  { id: 2, address: "5678 Pine Avenue, Sacramento, CA 95816", dateAdded: new Date("2025-01-18") },
+  { id: 3, address: "9012 Elm Boulevard, Sacramento, CA 95818", dateAdded: new Date("2025-02-03") },
+  { id: 4, address: "3456 Maple Drive, Sacramento, CA 95820", dateAdded: new Date("2025-02-11") },
+  { id: 5, address: "7890 Cedar Lane, Sacramento, CA 95822", dateAdded: new Date("2025-02-20") },
 ];
 
 export default function PHUpload() {
