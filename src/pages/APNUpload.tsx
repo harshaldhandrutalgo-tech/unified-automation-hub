@@ -100,10 +100,6 @@ export default function APNUpload() {
                 {filtered.map((row) => (
                   <tr key={row.id} className="border-b border-border/50 last:border-0">
                     <td className="py-2.5 pr-4 font-mono text-xs text-foreground">{row.apn}</td>
-                    <td className="py-2.5 pr-4 text-xs text-foreground flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
-                      {row.address}
-                    </td>
                     <td className="py-2.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="h-3 w-3 shrink-0" />
