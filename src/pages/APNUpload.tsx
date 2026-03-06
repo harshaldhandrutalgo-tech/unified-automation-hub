@@ -91,9 +91,8 @@ export default function APNUpload() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left">
+                 <tr className="border-b border-border text-left">
                   <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">APN</th>
-                  <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">Address</th>
                   <th className="pb-2 text-xs font-medium text-muted-foreground">Date Added</th>
                 </tr>
               </thead>
