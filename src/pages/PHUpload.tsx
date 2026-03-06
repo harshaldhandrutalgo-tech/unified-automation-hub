@@ -16,9 +16,7 @@ export default function PHUpload() {
   const [search, setSearch] = useState("");
 
   const filtered = mockAddresses.filter(
-    (a) =>
-      a.address.toLowerCase().includes(search.toLowerCase()) ||
-      a.region.toLowerCase().includes(search.toLowerCase())
+    (a) => a.address.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
