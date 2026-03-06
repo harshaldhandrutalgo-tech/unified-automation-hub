@@ -11,6 +11,7 @@ import APNUpload from "./pages/APNUpload";
 import PublicHealthAutomation from "./pages/PublicHealthAutomation";
 import PHUpload from "./pages/PHUpload";
 import Logs from "./pages/Logs";
+import EmailLogs from "./pages/EmailLogs";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
