@@ -3,11 +3,11 @@ import { Layout } from "@/components/Layout";
 import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
 
 const mockAPNs = [
-  { id: 1, apn: "123-456-789", address: "1234 Oak Street, Sacramento, CA 95814", dateAdded: new Date("2025-01-15") },
-  { id: 2, apn: "234-567-890", address: "5678 Pine Avenue, Sacramento, CA 95816", dateAdded: new Date("2025-01-20") },
-  { id: 3, apn: "345-678-901", address: "9012 Elm Boulevard, Sacramento, CA 95818", dateAdded: new Date("2025-02-01") },
-  { id: 4, apn: "456-789-012", address: "3456 Maple Drive, Sacramento, CA 95820", dateAdded: new Date("2025-02-10") },
-  { id: 5, apn: "567-890-123", address: "7890 Cedar Lane, Sacramento, CA 95822", dateAdded: new Date("2025-02-18") },
+  { id: 1, apn: "123-456-789", dateAdded: new Date("2025-01-15") },
+  { id: 2, apn: "234-567-890", dateAdded: new Date("2025-01-20") },
+  { id: 3, apn: "345-678-901", dateAdded: new Date("2025-02-01") },
+  { id: 4, apn: "456-789-012", dateAdded: new Date("2025-02-10") },
+  { id: 5, apn: "567-890-123", dateAdded: new Date("2025-02-18") },
 ];
 
 export default function APNUpload() {
