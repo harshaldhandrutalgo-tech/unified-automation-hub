@@ -48,7 +48,7 @@ export default function Logs() {
   });
 
   return (
-    <Layout title="Tracking & Logs" subtitle="Monitor all automation runs and system events">
+    <Layout title="Scraping Logs" subtitle="Monitor all scraping automation runs and system events">
       <div className="space-y-5 animate-fade-in">
         {/* Filters */}
         <div className="rounded-xl border border-border bg-card p-4 shadow-card">
