@@ -110,7 +110,7 @@ export default function APNUpload() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="py-8 text-center text-xs text-muted-foreground">
+                    <td colSpan={2} className="py-8 text-center text-xs text-muted-foreground">
                       <FileText className="h-5 w-5 mx-auto mb-1.5 opacity-40" />
                       No APNs found
                     </td>
