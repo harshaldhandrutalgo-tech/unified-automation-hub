@@ -16,9 +16,7 @@ export default function APNUpload() {
   const [search, setSearch] = useState("");
 
   const filtered = mockAPNs.filter(
-    (a) =>
-      a.apn.toLowerCase().includes(search.toLowerCase()) ||
-      a.address.toLowerCase().includes(search.toLowerCase())
+    (a) => a.apn.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
