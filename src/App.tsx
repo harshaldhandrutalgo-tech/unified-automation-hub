@@ -11,6 +11,7 @@ import APNUpload from "./pages/APNUpload";
 import PublicHealthAutomation from "./pages/PublicHealthAutomation";
 import PHUpload from "./pages/PHUpload";
 import Logs from "./pages/Logs";
+import EmailLogs from "./pages/EmailLogs";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/public-health-automation" element={<PublicHealthAutomation />} />
             <Route path="/ph-upload" element={<PHUpload />} />
             <Route path="/logs" element={<Logs />} />
+            <Route path="/email-logs" element={<EmailLogs />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

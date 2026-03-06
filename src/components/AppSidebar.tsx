@@ -19,7 +19,8 @@ const ALL_NAV_ITEMS = [
   { label: "Upload APN", href: "/apn-upload", icon: Upload, roles: ["admin", "user-apn"] as AppRole[] },
   { label: "Public Health", href: "/public-health-automation", icon: HeartPulse, roles: ["admin", "user-ph"] as AppRole[] },
   { label: "Upload Address", href: "/ph-upload", icon: Upload, roles: ["admin", "user-ph"] as AppRole[] },
-  { label: "Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
+  { label: "Scraping Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
+  { label: "Email Logs", href: "/email-logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
   { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph"] as AppRole[] },
 ];
 
