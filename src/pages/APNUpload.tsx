@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Upload, Search, Calendar, FileText } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import * as XLSX from "xlsx";
 
-const mockAPNs = [
+type APNEntry = {
+  id: number;
+  apn: string;
+  dateAdded: Date;
+};
+
+const initialAPNs: APNEntry[] = [
   { id: 1, apn: "123-456-789", dateAdded: new Date("2025-01-15") },
   { id: 2, apn: "234-567-890", dateAdded: new Date("2025-01-20") },
   { id: 3, apn: "345-678-901", dateAdded: new Date("2025-02-01") },
@@ -14,8 +22,77 @@ export default function APNUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [manualAPN, setManualAPN] = useState("");
   const [search, setSearch] = useState("");
+  const [apnList, setApnList] = useState<APNEntry[]>(initialAPNs);
+  const { toast } = useToast();
 
-  const filtered = mockAPNs.filter(
+  const nextId = () => Math.max(0, ...apnList.map((a) => a.id)) + 1;
+
+  const handleFileUpload = async (selectedFile: File) => {
+    setFile(selectedFile);
+    try {
+      const data = await selectedFile.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: Record<string, unknown>[] = XLSX.utils.sheet_to_json(sheet);
+
+      // Find the APN column (case-insensitive)
+      const apnKey = rows.length > 0
+        ? Object.keys(rows[0]).find((k) => k.toLowerCase().trim() === "apn")
+        : null;
+
+      if (!apnKey || rows.length === 0) {
+        toast({
+          title: "Invalid file",
+          description: "No \"APN\" column found in the uploaded file. Please ensure the first row has \"APN\" as a column header.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const newEntries: APNEntry[] = [];
+      let startId = nextId();
+      for (const row of rows) {
+        const val = String(row[apnKey] ?? "").trim();
+        if (val) {
+          newEntries.push({ id: startId++, apn: val, dateAdded: new Date() });
+        }
+      }
+
+      if (newEntries.length === 0) {
+        toast({
+          title: "No records found",
+          description: "The APN column was found but contained no values.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setApnList((prev) => [...prev, ...newEntries]);
+      toast({
+        title: "APNs added successfully",
+        description: `${newEntries.length} new APN${newEntries.length > 1 ? "s" : ""} added to the list.`,
+      });
+    } catch {
+      toast({
+        title: "Error reading file",
+        description: "Could not parse the uploaded file. Please check the format.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManualAdd = () => {
+    const val = manualAPN.trim();
+    if (!val) return;
+    setApnList((prev) => [...prev, { id: nextId(), apn: val, dateAdded: new Date() }]);
+    setManualAPN("");
+    toast({
+      title: "APN added",
+      description: `APN "${val}" has been added to the list.`,
+    });
+  };
+
+  const filtered = apnList.filter(
     (a) => a.apn.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -44,9 +121,16 @@ export default function APNUpload() {
                   type="file"
                   accept=".csv,.xls,.xlsx"
                   className="sr-only"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileUpload(f);
+                    e.target.value = "";
+                  }}
                 />
               </label>
+              <p className="text-[10px] text-muted-foreground mt-1.5">
+                File must have an <strong>"APN"</strong> column header in the first row
+              </p>
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-foreground">
@@ -57,12 +141,13 @@ export default function APNUpload() {
                   type="text"
                   value={manualAPN}
                   onChange={(e) => setManualAPN(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleManualAdd()}
                   placeholder="e.g. 123-456-789"
                   className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 <button
                   className="h-9 shrink-0 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                  onClick={() => setManualAPN("")}
+                  onClick={handleManualAdd}
                 >
                   Add
                 </button>
@@ -91,7 +176,7 @@ export default function APNUpload() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                 <tr className="border-b border-border text-left">
+                <tr className="border-b border-border text-left">
                   <th className="pb-2 pr-4 text-xs font-medium text-muted-foreground">APN</th>
                   <th className="pb-2 text-xs font-medium text-muted-foreground">Date Added</th>
                 </tr>
