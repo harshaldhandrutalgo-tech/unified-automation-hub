@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { Upload, Search, MapPin, Calendar, FileText } from "lucide-react";
+import { Upload, Search, Calendar, FileText } from "lucide-react";
 
 const mockAPNs = [
   { id: 1, apn: "123-456-789", dateAdded: new Date("2025-01-15") },
