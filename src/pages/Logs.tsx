@@ -33,7 +33,7 @@ const mockLogs: LogEntry[] = [
   { id: "RUN-0036", type: "Public Health", status: "Completed", startTime: new Date("2026-02-28T08:00:00"), endTime: new Date("2026-02-28T08:19:10"), message: "Scraped 134 water quality and pest control reports", records: 134 },
 ];
 
-const fmt = (d: Date) => d.toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) + " " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
 
 export default function Logs() {
   const [search, setSearch] = useState("");

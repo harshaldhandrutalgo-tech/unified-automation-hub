@@ -107,7 +107,7 @@ const mockEmailLogs: EmailLogDate[] = [
 ];
 
 const fmtDate = (d: Date) =>
-  d.toLocaleDateString("en-US", { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+  d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
 
 export default function EmailLogs() {
   const [search, setSearch] = useState("");
