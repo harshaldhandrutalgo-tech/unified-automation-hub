@@ -13,6 +13,8 @@ import PHUpload from "./pages/PHUpload";
 import Logs from "./pages/Logs";
 import EmailLogs from "./pages/EmailLogs";
 import Settings from "./pages/Settings";
+import BillingDashboard from "./pages/BillingDashboard";
+import Subscription from "./pages/Subscription";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
