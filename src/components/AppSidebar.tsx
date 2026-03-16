@@ -23,6 +23,8 @@ const ALL_NAV_ITEMS = [
   { label: "Upload Address", href: "/ph-upload", icon: Upload, roles: ["admin", "user-ph"] as AppRole[] },
   { label: "Scraping Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
   { label: "Email Logs", href: "/email-logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
+  { label: "Billing", href: "/billing", icon: CreditCard, roles: ["admin"] as AppRole[] },
+  { label: "Subscription", href: "/subscription", icon: Receipt, roles: ["user-apn", "user-ph"] as AppRole[] },
   { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph"] as AppRole[] },
 ];
 
