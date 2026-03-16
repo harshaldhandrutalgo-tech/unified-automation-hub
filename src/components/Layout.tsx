@@ -81,7 +81,7 @@ export function Layout({ children, title, subtitle }: LayoutProps) {
                     {ROLE_LABELS[role]}
                   </p>
                   <p className="text-[10px] text-muted-foreground leading-tight">
-                    {role === "admin" ? "Full access" : role === "user-apn" ? "APN only" : "PH only"}
+                    {role === "admin" ? "Full access" : role === "user-apn" ? "APN only" : role === "user-ph" ? "PH only" : "Tax only"}
                   </p>
                 </div>
                 <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />

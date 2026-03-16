@@ -10,6 +10,8 @@ import APNAutomation from "./pages/APNAutomation";
 import APNUpload from "./pages/APNUpload";
 import PublicHealthAutomation from "./pages/PublicHealthAutomation";
 import PHUpload from "./pages/PHUpload";
+import TaxAutomation from "./pages/TaxAutomation";
+import TaxUpload from "./pages/TaxUpload";
 import Logs from "./pages/Logs";
 import EmailLogs from "./pages/EmailLogs";
 import Settings from "./pages/Settings";
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/apn-upload" element={<APNUpload />} />
             <Route path="/public-health-automation" element={<PublicHealthAutomation />} />
             <Route path="/ph-upload" element={<PHUpload />} />
+            <Route path="/tax-automation" element={<TaxAutomation />} />
+            <Route path="/tax-upload" element={<TaxUpload />} />
             <Route path="/logs" element={<Logs />} />
             <Route path="/email-logs" element={<EmailLogs />} />
             <Route path="/settings" element={<Settings />} />

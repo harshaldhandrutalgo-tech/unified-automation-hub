@@ -12,6 +12,7 @@ import {
   Upload,
   CreditCard,
   Receipt,
+  Landmark,
 } from "lucide-react";
 import { useRole, AppRole } from "@/context/RoleContext";
 
@@ -21,17 +22,20 @@ const ALL_NAV_ITEMS = [
   { label: "Upload APN", href: "/apn-upload", icon: Upload, roles: ["admin", "user-apn"] as AppRole[] },
   { label: "Public Health", href: "/public-health-automation", icon: HeartPulse, roles: ["admin", "user-ph"] as AppRole[] },
   { label: "Upload Address", href: "/ph-upload", icon: Upload, roles: ["admin", "user-ph"] as AppRole[] },
+  { label: "Tax Automation", href: "/tax-automation", icon: Landmark, roles: ["admin", "user-tax"] as AppRole[] },
+  { label: "Upload Tax", href: "/tax-upload", icon: Upload, roles: ["admin", "user-tax"] as AppRole[] },
   { label: "Scraping Logs", href: "/logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
   { label: "Email Logs", href: "/email-logs", icon: ScrollText, roles: ["admin"] as AppRole[] },
   { label: "Billing", href: "/billing", icon: CreditCard, roles: ["admin"] as AppRole[] },
-  { label: "Subscription", href: "/subscription", icon: Receipt, roles: ["user-apn", "user-ph"] as AppRole[] },
-  { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph"] as AppRole[] },
+  { label: "Subscription", href: "/subscription", icon: Receipt, roles: ["user-apn", "user-ph", "user-tax"] as AppRole[] },
+  { label: "Settings", href: "/settings", icon: Settings, roles: ["admin", "user-apn", "user-ph", "user-tax"] as AppRole[] },
 ];
 
 const ROLE_SECTION_LABEL: Record<AppRole, string> = {
   admin: "Main Menu",
   "user-apn": "APN Automation",
   "user-ph": "Public Health",
+  "user-tax": "Tax Details",
 };
 
 export function AppSidebar() {
@@ -43,23 +47,15 @@ export function AppSidebar() {
   return (
     <aside className="flex h-screen w-60 flex-shrink-0 flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-<div className="flex h-16 items-center gap-2.5 px-5 border-b border-sidebar-border">
-  <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
-    <img
-      src="/logo.png"
-      alt="UniAutomate Logo"
-      className="h-8 w-8 object-contain"
-    />
-  </div>
-  <div>
-    <p className="text-sm font-semibold text-sidebar-accent-foreground leading-tight">
-      UniAutomate
-    </p>
-    <p className="text-[10px] text-sidebar-muted leading-tight">
-      Automation Platform
-    </p>
-  </div>
-</div>
+      <div className="flex h-16 items-center gap-2.5 px-5 border-b border-sidebar-border">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+          <img src="/logo.png" alt="UniAutomate Logo" className="h-8 w-8 object-contain" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-sidebar-accent-foreground leading-tight">UniAutomate</p>
+          <p className="text-[10px] text-sidebar-muted leading-tight">Automation Platform</p>
+        </div>
+      </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4 px-3">
