@@ -10,6 +10,8 @@ import {
   ChevronRight,
   HeartPulse,
   Upload,
+  CreditCard,
+  Receipt,
 } from "lucide-react";
 import { useRole, AppRole } from "@/context/RoleContext";
 
