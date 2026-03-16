@@ -13,12 +13,14 @@ const ROLE_OPTIONS: { value: AppRole; label: string; description: string }[] = [
   { value: "admin", label: "Admin", description: "Full access to all features" },
   { value: "user-apn", label: "APN User", description: "APN Automation only" },
   { value: "user-ph", label: "PH User", description: "Public Health Automation only" },
+  { value: "user-tax", label: "Tax User", description: "Tax Details only" },
 ];
 
 const ROLE_BADGE_STYLE: Record<AppRole, string> = {
   admin: "bg-primary text-primary-foreground",
   "user-apn": "bg-status-info text-white",
   "user-ph": "bg-status-success text-white",
+  "user-tax": "bg-[hsl(270,60%,55%)] text-white",
 };
 
 export function Layout({ children, title, subtitle }: LayoutProps) {
