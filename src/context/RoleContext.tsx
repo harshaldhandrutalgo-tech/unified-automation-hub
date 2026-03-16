@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-export type AppRole = "admin" | "user-apn" | "user-ph";
+export type AppRole = "admin" | "user-apn" | "user-ph" | "user-tax";
 
 interface RoleContextValue {
   role: AppRole;
@@ -28,10 +28,12 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   admin: "Admin",
   "user-apn": "APN User",
   "user-ph": "PH User",
+  "user-tax": "Tax User",
 };
 
 export const ROLE_INITIALS: Record<AppRole, string> = {
   admin: "A",
   "user-apn": "U",
   "user-ph": "U",
+  "user-tax": "T",
 };

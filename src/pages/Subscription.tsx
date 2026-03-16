@@ -61,7 +61,7 @@ export default function Subscription() {
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
 
-  const moduleLabel = role === "user-apn" ? "APN" : "Public Health";
+  const moduleLabel = role === "user-apn" ? "APN" : role === "user-ph" ? "Public Health" : "Tax";
 
   function handleUpgrade(planId: string) {
     setSelectedPlan(planId);
